@@ -16,6 +16,8 @@
 	<meta name="msapplication-config" content="images/browserconfig.xml">
     <meta name="mobile-web-app-capable" content="yes">
 	<meta name="theme-color" content="#d89000">
+	<script type="text/javascript" src="js/app.min.js"></script>
+	<script type="text/javascript" src="js/appB.min.js"></script>
 	<script type="text/javascript">
 		/**
 		 * URL Parameters and protocol description are here:
@@ -294,37 +296,34 @@
 				
 				function loadAppJS()
 				{
-					mxscript('js/app.min.js', function()
+					mxScriptsLoaded = true;
+					checkAllLoaded();
+					
+					if (!supportedDomain)
 					{
-						mxScriptsLoaded = true;
-						checkAllLoaded();
-						
-						if (!supportedDomain)
+						mxscript('js/PostConfig.js');
+					}
+					
+					// Electron
+					if (mxIsElectron)
+					{
+						mxscript('js/diagramly/DesktopLibrary.js', function()
 						{
-							mxscript('js/PostConfig.js');
-						}
-						
-						// Electron
-						if (mxIsElectron)
-						{
-							mxscript('js/diagramly/DesktopLibrary.js', function()
+							mxscript('js/diagramly/ElectronApp.js', function()
 							{
-								mxscript('js/diagramly/ElectronApp.js', function()
+								mxscript('js/extensions.min.js', function()
 								{
-									mxscript('js/extensions.min.js', function()
+									mxscript('js/stencils.min.js', function()
 									{
-										mxscript('js/stencils.min.js', function()
+										mxscript('js/shapes.min.js', function()
 										{
-											mxscript('js/shapes.min.js', function()
-											{
-												mxscript('js/PostConfig.js');
-											});
+											mxscript('js/PostConfig.js');
 										});
 									});
 								});
 							});
-						}
-					});
+						});
+					}	
 				};
 				
 				if (!supportedDomain || mxIsElectron)
