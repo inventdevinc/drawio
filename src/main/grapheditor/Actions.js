@@ -402,6 +402,101 @@ Actions.prototype.init = function()
 		var cell = graph.getSelectionCell() || graph.getModel().getRoot();
 		ui.showDataDialog(cell);
 	}, null, null, Editor.ctrlKey + '+M');
+
+	this.addAction('editFinish...', function()
+	{
+		var cell = graph.getSelectionCell() || graph.getModel().getRoot();
+		var value = graph.getModel().getValue(cell);
+
+		if (!mxUtils.isNode(value))
+		{
+			var doc = mxUtils.createXmlDocument();
+			var obj = doc.createElement('object');
+			obj.setAttribute('label', value || '');
+			value = obj;
+		}
+
+		// Ensure all properties have been set in cell value
+		var change = false
+		value = value.cloneNode(true);
+		var attributes = ["width", "height", "color", "pdf", "supplier_link", "comments"]
+		for(var i = 0; i < attributes.length; i++) {
+			attr = attributes[i]
+
+			var exists = false
+			for (var j = 0; value.attrs != null && j < value.attrs.length; j++)
+			{
+				if(attrs[j].nodeName == attr) {
+					exists = true
+				}
+			}
+				
+			if(!exists) {
+				value.setAttribute(attr, "")
+				change = true
+			}
+		}
+
+
+
+		if(change) {
+			value.setAttribute('placeholders', '1')
+			var labelString = attributes.map(x => {
+				return `${x}: %${x}%`
+			}).join("\n")
+			value.setAttribute('label', labelString)
+			graph.getModel().setValue(cell, value);
+		}
+
+		ui.showDataDialog(cell);
+	}, null, null, Editor.ctrlKey + '+M');
+
+	this.addAction('editFinish...', function()
+	{
+		var cell = graph.getSelectionCell() || graph.getModel().getRoot();
+		var value = graph.getModel().getValue(cell);
+
+		if (!mxUtils.isNode(value))
+		{
+			var doc = mxUtils.createXmlDocument();
+			var obj = doc.createElement('object');
+			obj.setAttribute('label', value || '');
+			value = obj;
+		}
+
+		// Ensure all properties have been set in cell value
+		var change = false
+		value = value.cloneNode(true);
+		var attributes = ["color", "pdf", "supplier_link", "comments"]
+		for(var i = 0; i < attributes.length; i++) {
+			attr = attributes[i]
+
+			var exists = false
+			for (var j = 0; value.attrs != null && j < value.attrs.length; j++) {
+				if(attrs[j].nodeName == attr) {
+					exists = true
+				}
+			}
+				
+			if(!exists) {
+				value.setAttribute(attr, "")
+				change = true
+			}
+		}
+
+
+
+		if(change) {
+			value.setAttribute('placeholders', '1')
+			var labelString = attributes.map(x => {
+				return `${x}: %${x}%`
+			}).join("\n")
+			value.setAttribute('label', labelString)
+			graph.getModel().setValue(cell, value);
+		}
+
+		ui.showDataDialog(cell);
+	}, null, null, Editor.ctrlKey + '+M');
 	this.addAction('editTooltip...', function()
 	{
 		if (graph.isEnabled() && !graph.isSelectionEmpty())
